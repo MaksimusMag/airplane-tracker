@@ -41,7 +41,7 @@ class OpenSkyAPIConnector(BaseAPIConnector):
         }
 
     def get_aeroplanes_in_bbox(
-        self, min_lat: float, max_lat: float, min_lon: float, max_lon: float
+            self, min_lat: float, max_lat: float, min_lon: float, max_lon: float
     ) -> list[dict[str, Any]]:
         """Получить самолёты в bounding box через OpenSky API."""
         params = {
@@ -57,12 +57,16 @@ class OpenSkyAPIConnector(BaseAPIConnector):
         if not json_data.get("states"):
             return []
 
-        columns = json_data["columns"]
-        states = json_data["states"]
-
         result = []
-        for state in states:
-            aeroplane_dict = dict(zip(columns, state))
+        # Индексы полей согласно документации OpenSky Network
+        for state in json_data["states"]:
+            aeroplane_dict = {
+                "icao24": state[0],
+                "callsign": state[1],
+                "origin_country": state[2],
+                "velocity": state[9] if len(state) > 9 else 0.0,
+                "baro_altitude": state[13] if len(state) > 13 else 0.0,
+            }
             result.append(aeroplane_dict)
 
         return result
