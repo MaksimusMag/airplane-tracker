@@ -30,15 +30,20 @@ class TestJSONStorage:
         result = self.storage.get_aeroplanes()
         assert len(result) == 0
 
-    def test_filter_by_country(self) -> None:
-        """Фильтрация по стране."""
-        p1 = Aeroplane("A", "USA", 100, 1000)
+    def test_filter_by_substring_case_insensitive(self) -> None:
+        """Фильтрация по подстроке без учета регистра."""
+        p1 = Aeroplane("A", "United States", 100, 1000)
         p2 = Aeroplane("B", "UK", 200, 2000)
+        p3 = Aeroplane("C", "UNITED KINGDOM", 150, 1500)
         self.storage.add_aeroplane(p1)
         self.storage.add_aeroplane(p2)
-        us_planes = self.storage.get_aeroplanes(country="USA")
-        assert len(us_planes) == 1
-        assert us_planes[0].callsign == "A"
+        self.storage.add_aeroplane(p3)
+
+        # Поиск "united" должен найти "United States" и "UNITED KINGDOM"
+        results = self.storage.get_aeroplanes(country="united")
+        assert len(results) == 2
+        callsigns = {p.callsign for p in results}
+        assert callsigns == {"A", "C"}
 
     def test_duplicate_prevention(self) -> None:
         """Запрет дубликатов по callsign."""
