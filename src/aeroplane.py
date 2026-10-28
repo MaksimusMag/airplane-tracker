@@ -36,13 +36,19 @@ class Aeroplane:
         Returns:
             Экземпляр Aeroplane.
         """
+        # Безопасное получение значений: если None или отсутствует — берём дефолт
+        raw_callsign = data.get("callsign")
+        raw_country = data.get("origin_country")
+        raw_velocity = data.get("velocity")
+        raw_altitude = data.get("baro_altitude")
+
         return cls(
-            callsign=data.get("callsign", "UNKNOWN").strip(),
-            country=data.get("origin_country", "Unknown").strip(),
-            velocity=float(data.get("velocity", 0.0) or 0.0),
-            altitude=float(data.get("baro_altitude", 0.0) or 0.0),
+            callsign=(raw_callsign or "UNKNOWN").strip(),
+            country=(raw_country or "Unknown").strip(),
+            velocity=float(raw_velocity or 0.0),
+            altitude=float(raw_altitude or 0.0),
             _icao24=data.get("icao24", ""),
-            _origin_country=data.get("origin_country", ""),
+            _origin_country=raw_country or "",
         )
 
     def __lt__(self, other: Aeroplane) -> bool:
@@ -52,13 +58,17 @@ class Aeroplane:
         return self.altitude < other.altitude
 
     def __gt__(self, other: Aeroplane) -> bool:
-        """Сравнение по скорости (для сортировки)."""
+        """Сравнение по высоте (единый критерий с __lt__)."""
         if not isinstance(other, Aeroplane):
             return NotImplemented
-        return self.velocity > other.velocity
+        return self.altitude > other.altitude
 
     def __eq__(self, other: object) -> bool:
         """Равенство по позывному."""
         if not isinstance(other, Aeroplane):
             return NotImplemented
         return self.callsign == other.callsign
+
+    def sort_by_velocity_desc(self, other: Aeroplane) -> int:
+        """Вспомогательный метод для сортировки по скорости (используется как key)."""
+        return -1 if self.velocity > other.velocity else (1 if self.velocity < other.velocity else 0)

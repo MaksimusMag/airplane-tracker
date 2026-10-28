@@ -1,5 +1,4 @@
 import pytest
-
 from src.aeroplane import Aeroplane
 
 
@@ -38,15 +37,29 @@ class TestAeroplane:
         assert plane.country == "United Kingdom"
         assert plane._icao24 == "abc123"
 
+    def test_from_api_response_with_none_values(self) -> None:
+        """Фабричный метод корректно обрабатывает None значения."""
+        api_data = {
+            "callsign": None,
+            "origin_country": None,
+            "velocity": None,
+            "baro_altitude": None,
+        }
+        plane = Aeroplane.from_api_response(api_data)
+        assert plane.callsign == "UNKNOWN"
+        assert plane.country == "Unknown"
+        assert plane.velocity == 0.0
+        assert plane.altitude == 0.0
+
     def test_comparison_by_altitude(self) -> None:
-        """Сравнение по высоте работает корректно."""
+        """Сравнение по высоте через < работает корректно."""
         p1 = Aeroplane("A", "US", 100, 5000)
         p2 = Aeroplane("B", "US", 100, 10000)
         assert p1 < p2
 
-    def test_comparison_by_velocity(self) -> None:
-        """Сравнение по скорости работает корректно."""
-        p1 = Aeroplane("A", "US", 200, 5000)
+    def test_comparison_by_altitude_gt(self) -> None:
+        """Сравнение по высоте через > работает корректно."""
+        p1 = Aeroplane("A", "US", 100, 10000)
         p2 = Aeroplane("B", "US", 100, 5000)
         assert p1 > p2
 

@@ -39,14 +39,22 @@ class JSONStorage(BaseStorage):
             self._save()
 
     def get_aeroplanes(self, **criteria: Any) -> list[Aeroplane]:
-        """Получить самолёты по критериям."""
+        """Получить самолёты по критериям (поиск по подстроке, case-insensitive)."""
         result = []
         for item in self._data:
             match = True
             for key, value in criteria.items():
-                if item.get(key) != value:
-                    match = False
-                    break
+                item_value = item.get(key, "")
+                # Приводим оба значения к нижнему регистру и проверяем вхождение
+                if isinstance(value, str) and isinstance(item_value, str):
+                    if value.lower() not in item_value.lower():
+                        match = False
+                        break
+                else:
+                    # Для нестрочных значений оставляем точное сравнение
+                    if item_value != value:
+                        match = False
+                        break
             if match:
                 result.append(Aeroplane(**item))
         return result
