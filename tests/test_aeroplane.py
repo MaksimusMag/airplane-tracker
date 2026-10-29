@@ -63,8 +63,11 @@ class TestAeroplane:
         p2 = Aeroplane("B", "US", 100, 5000)
         assert p1 > p2
 
-    def test_equality_by_callsign(self) -> None:
-        """Равенство определяется по callsign."""
-        p1 = Aeroplane("TEST", "US", 100, 100)
-        p2 = Aeroplane("TEST", "UK", 200, 200)
-        assert p1 == p2
+    def test_equality_by_altitude(self) -> None:
+        """Равенство определяется по высоте (единый критерий)."""
+        p1 = Aeroplane("TEST", "US", 100, 5000)
+        p2 = Aeroplane("OTHER", "UK", 200, 5000)
+        assert p1 == p2  # одинаковая высота
+
+        p3 = Aeroplane("TEST", "US", 100, 10000)
+        assert p1 != p3  # разная высота
