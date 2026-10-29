@@ -65,7 +65,7 @@ class OpenSkyAPIConnector(BaseAPIConnector):
                 "callsign": state[1],
                 "origin_country": state[2],
                 "velocity": state[9] if len(state) > 9 else 0.0,
-                "baro_altitude": state[13] if len(state) > 13 else 0.0,
+                "baro_altitude": state[7] if len(state) > 7 else 0.0,
             }
             result.append(aeroplane_dict)
 

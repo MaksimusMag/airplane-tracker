@@ -1,0 +1,23 @@
+# Virtual environments
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+htmlcov/
+.coverage
+
+# IDE
+.idea/
+*.iml
+
+# Build artifacts
+dist/
+build/
+*.egg-info/

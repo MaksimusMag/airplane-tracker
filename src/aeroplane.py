@@ -64,11 +64,7 @@ class Aeroplane:
         return self.altitude > other.altitude
 
     def __eq__(self, other: object) -> bool:
-        """Равенство по позывному."""
+        """Равенство по высоте (единый критерий с < и >)."""
         if not isinstance(other, Aeroplane):
             return NotImplemented
-        return self.callsign == other.callsign
-
-    def sort_by_velocity_desc(self, other: Aeroplane) -> int:
-        """Вспомогательный метод для сортировки по скорости (используется как key)."""
-        return -1 if self.velocity > other.velocity else (1 if self.velocity < other.velocity else 0)
+        return self.altitude == other.altitude
